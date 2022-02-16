@@ -1,24 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import Player from './Player'
+import Form from './Form';
+import { useState } from 'react';
+
 
 function App() {
+
+  const [btnStyle, setBtnStyle] = useState({})
+  const [playerStyle, setPlayerStyle] = useState({width: 700, height: 400})
+  function getBtnStyleData(bgColor, btnColor){
+    setBtnStyle({backgroundColor: String(bgColor), color: btnColor})
+    console.log(bgColor, btnColor)
+  }
+  function getPlayerStyleData(w,h){
+    setPlayerStyle({width: w, height: h})
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Form getBtnStyleData={getBtnStyleData} getPlayerStyleData={getPlayerStyleData} />
+    <Player btnStyle={btnStyle} playerStyle={playerStyle}/>
+    </>
   );
 }
 
