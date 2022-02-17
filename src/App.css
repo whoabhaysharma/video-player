@@ -66,10 +66,22 @@ p{
   border-radius: 3px;
 }
 
-.play-btn-timer{
-  width: 200px;
-  display: flex;
 
-  flex-direction: row;
-  align-items: center;
+
+.forward-backward-btn{
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.timer{
+  width: 150px;
+}
+
+.center{
+  width: 150px;
+}
+
+.volume{
+  width: 150px;
 }

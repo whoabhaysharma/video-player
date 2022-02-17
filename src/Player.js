@@ -19,6 +19,9 @@ function Player() {
     if (isPlaying) {
       vidRef.current.play();
       setPlayBtnIcon("◀");
+      setInterval(function inside() {
+        setTimeLeft(vidRef.current.currentTime);
+      }, 100);
     } else {
       vidRef.current.pause();
       setPlayBtnIcon("▶");
@@ -35,10 +38,6 @@ function Player() {
     }
   }
 
-  setInterval(function inside() {
-    setTimeLeft(vidRef.current.currentTime);
-  }, 100);
-
   function volumeControl(e) {
     vidRef.current.volume = e.target.value / 100;
   }
@@ -51,13 +50,38 @@ function Player() {
     setVisibility("controlsHide");
   }
 
+  // backward forward handler
+  function backwardForwardHandler(e) {
+    let position = e.clientX;
+    if (position < 210) {
+      backward(5);
+    } else if (position > 490) {
+      forward(5);
+    }
+  }
+
+  //backward forwrad functions
+  function forward(c) {
+    vidRef.current.currentTime = vidRef.current.currentTime + c;
+  }
+
+  function backward(c) {
+    vidRef.current.currentTime = vidRef.current.currentTime - c;
+  }
+
   return (
     <div
       className="player"
       onMouseEnter={hoverOnVideo}
       onMouseLeave={hoverOutVideo}
     >
-      <video ref={vidRef} onClick={playPauseHandler} width={700} height={400}>
+      <video
+        ref={vidRef}
+        onDoubleClick={backwardForwardHandler}
+        onClick={playPauseHandler}
+        width={700}
+        height={400}
+      >
         <source src={video} type="video/mp4"></source>
       </video>
       <button id="muteBtn" onClick={muteControl}>
@@ -65,12 +89,22 @@ function Player() {
       </button>
       <div className={visibility}>
         <div className="controls">
-          <div className="play-btn-timer">
+          <div className="timer">
+            <p>{Math.floor(timeLeft)}</p>
+          </div>
+          <div className="center">
+            <button
+              className="forward-backward-btn"
+              onClick={() => backward(5)}
+            >
+              -5 sec
+            </button>
             <button onClick={playPauseHandler} id="play-btn">
               {playBtnIcon}
             </button>
-
-            <p>{Math.floor(timeLeft)}</p>
+            <button className="forward-backward-btn" onClick={() => forward(5)}>
+              +5 sec
+            </button>
           </div>
           <div className="volume">
             <input
