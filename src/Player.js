@@ -1,55 +1,92 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import video from "./video/video.mp4";
 
-function Player({btnStyle, playerStyle}) {
+function Player() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playBtnIcon, setPlayBtnIcon] = useState("▶");
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [visibility, setVisibility] = useState("controlsHide");
+  const [muteStatus, setMuteStatus] = useState("Mute");
   const vidRef = useRef(null);
-  const[btnDisplay, setBtnDisplay] = useState(btnStyle)
-  const [isPlaying, setIsPlaying] = useState(false)
 
-  
-  
-  const clickHandler = () => {
-    setIsPlaying(!isPlaying)
-  };
-
-  useEffect(()=>{
-    if (isPlaying) {
-      vidRef.current.play();
-    } else {
-      vidRef.current.pause(); 
-    }
-  },[isPlaying])
-
-  //this is added controls
-
-  
- 
-  function videHoverHandler(){
-    vidRef.current.controls = true;
+  function playPauseHandler() {
+    setIsPlaying(!isPlaying);
   }
 
-  function mouseLeaveHandler(){
-    vidRef.current.controls = false;
+  useEffect(() => {
+    setDuration(vidRef.current.duration);
+    if (isPlaying) {
+      vidRef.current.play();
+      setPlayBtnIcon("◀");
+    } else {
+      vidRef.current.pause();
+      setPlayBtnIcon("▶");
+    }
+  }, [isPlaying]);
+
+  function muteControl() {
+    if (vidRef.current.muted) {
+      vidRef.current.muted = false;
+      setMuteStatus("Mute");
+    } else {
+      vidRef.current.muted = true;
+      setMuteStatus("Unmute");
+    }
+  }
+
+  setInterval(function inside() {
+    setTimeLeft(vidRef.current.currentTime);
+  }, 100);
+
+  function volumeControl(e) {
+    vidRef.current.volume = e.target.value / 100;
+  }
+
+  // controls show/hide on video hover
+  function hoverOnVideo() {
+    setVisibility("controlsShow");
+  }
+  function hoverOutVideo() {
+    setVisibility("controlsHide");
   }
 
   return (
-    <>
-      <video
-        onMouseEnter={videHoverHandler}
-        onMouseLeave={mouseLeaveHandler}
-        onClick={clickHandler}
-        id="videoPlayer"
-        ref={vidRef}
-        width={playerStyle.width}
-        height={playerStyle.height}
-      >
+    <div
+      className="player"
+      onMouseEnter={hoverOnVideo}
+      onMouseLeave={hoverOutVideo}
+    >
+      <video ref={vidRef} onClick={playPauseHandler} width={700} height={400}>
         <source src={video} type="video/mp4"></source>
       </video>
-      {!isPlaying && (
-         <button id="btn" style={btnDisplay} onClick={clickHandler}></button>
-      )}
-       
-    </>
+      <button id="muteBtn" onClick={muteControl}>
+        {muteStatus}
+      </button>
+      <div className={visibility}>
+        <div className="controls">
+          <div className="play-btn-timer">
+            <button onClick={playPauseHandler} id="play-btn">
+              {playBtnIcon}
+            </button>
+
+            <p>{Math.floor(timeLeft)}</p>
+          </div>
+          <div className="volume">
+            <input
+              onChange={volumeControl}
+              type="range"
+              min="1"
+              max="100"
+              class="slider"
+            ></input>
+          </div>
+        </div>
+        <div className="progress-bar">
+          <progress id="file" value={timeLeft} max={duration}></progress>
+        </div>
+      </div>
+    </div>
   );
 }
 
