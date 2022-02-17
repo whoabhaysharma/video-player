@@ -1,28 +1,87 @@
-#videoPlayer{
+.player{
   position: relative;
+  padding: 0px;
+  width: 700px;
+  height: 400px;
+  background-color: blue;
 }
 
-#btn{
-  background-color: blueviolet;
+.controlsShow{
+  width: 100%;
+  background-image: linear-gradient(transparent, black);
   position: absolute;
-  top: 170px;
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  bottom: 0px;
+  padding: 10px 15px;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 100px;
-  color: white;
-  left: 300px;
-  height: 100px;
-  width: 100px;
- 
-  border: none;
 }
 
-#btn::before{
-  content: "";
-  display: inline-block;
-  border-left: 0.3em solid;
-  border-top: 0.18em solid transparent;
-  border-bottom: 0.18em solid transparent;
+.controlsHide{
+  display: none;
+
+}
+
+.controls{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar{
+  width: 100%;
+  
+}
+
+progress{
+  width: 100%;
+}
+
+#play-btn{
+  text-align: center;
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}
+
+p{
+  color: white;
+}
+
+#muteBtn{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 3px;
+}
+
+
+
+.forward-backward-btn{
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.timer{
+  width: 150px;
+}
+
+.center{
+  width: 150px;
+}
+
+.volume{
+  width: 150px;
 }
