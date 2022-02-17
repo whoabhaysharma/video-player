@@ -4,7 +4,7 @@ import video from "./video/video.mp4";
 function Player() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playBtnIcon, setPlayBtnIcon] = useState("▶");
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [currTime, setCurrTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [visibility, setVisibility] = useState("controlsHide");
   const [muteStatus, setMuteStatus] = useState("Mute");
@@ -15,12 +15,12 @@ function Player() {
   }
 
   useEffect(() => {
-    setDuration(vidRef.current.duration);
+    setDuration(vidRef.current.duration)
     if (isPlaying) {
       vidRef.current.play();
       setPlayBtnIcon("◀");
       setInterval(function inside() {
-        setTimeLeft(vidRef.current.currentTime);
+        setCurrTime(vidRef.current.currentTime);
       }, 100);
     } else {
       vidRef.current.pause();
@@ -69,6 +69,36 @@ function Player() {
     vidRef.current.currentTime = vidRef.current.currentTime - c;
   }
 
+
+// formatter
+function toHHMMSS(s){
+  let m = s/60;
+  m = Math.floor(m)
+  let se = s - (m*60)
+  se = Math.floor(se)
+  let time= correctFormat(m,se);
+  return time;
+}
+
+function correctFormat(min,sec){
+  let minutes, second;
+  if(min<10){
+      minutes = "0" + min
+  }else{
+      minutes = min;
+  }
+  if(sec < 10){
+      second = "0" + sec;
+  }else{
+      second = sec;
+  }
+  return minutes+":"+second
+}
+////
+
+
+
+
   return (
     <div
       className="player"
@@ -90,7 +120,7 @@ function Player() {
       <div className={visibility}>
         <div className="controls">
           <div className="timer">
-            <p>{Math.floor(timeLeft)}</p>
+            <p>{toHHMMSS(currTime)}/{toHHMMSS(duration)}</p>
           </div>
           <div className="center">
             <button
@@ -117,7 +147,7 @@ function Player() {
           </div>
         </div>
         <div className="progress-bar">
-          <progress id="file" value={timeLeft} max={duration}></progress>
+          <progress id="file" value={currTime} max={duration}></progress>
         </div>
       </div>
     </div>
