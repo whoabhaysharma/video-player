@@ -8,14 +8,20 @@ function Player() {
   const [duration, setDuration] = useState(0);
   const [visibility, setVisibility] = useState("controlsHide");
   const [muteStatus, setMuteStatus] = useState("Mute");
+  const [position, setPosition] = useState("player-inframe")
+  const [playerSize, setPlayerSize] = useState({width: 700, height: 400})
   const vidRef = useRef(null);
 
   function playPauseHandler() {
     setIsPlaying(!isPlaying);
   }
 
+  useEffect(()=>{
+    setDuration(vidRef.current.duration);
+  })
+
   useEffect(() => {
-    setDuration(vidRef.current.duration)
+    
     if (isPlaying) {
       vidRef.current.play();
       setPlayBtnIcon("◀");
@@ -69,88 +75,115 @@ function Player() {
     vidRef.current.currentTime = vidRef.current.currentTime - c;
   }
 
+  // formatter
+  function toHHMMSS(s) {
+    let m = s / 60;
+    m = Math.floor(m);
+    let se = s - m * 60;
+    se = Math.floor(se);
+    let time = correctFormat(m, se);
+    return time;
+  }
 
-// formatter
-function toHHMMSS(s){
-  let m = s/60;
-  m = Math.floor(m)
-  let se = s - (m*60)
-  se = Math.floor(se)
-  let time= correctFormat(m,se);
-  return time;
-}
-
-function correctFormat(min,sec){
-  let minutes, second;
-  if(min<10){
-      minutes = "0" + min
-  }else{
+  function correctFormat(min, sec) {
+    let minutes, second;
+    if (min < 10) {
+      minutes = "0" + min;
+    } else {
       minutes = min;
-  }
-  if(sec < 10){
+    }
+    if (sec < 10) {
       second = "0" + sec;
-  }else{
+    } else {
       second = sec;
+    }
+    return minutes + ":" + second;
   }
-  return minutes+":"+second
-}
-////
+  ////
 
+  function seeking(e) {
+    console.log(e);
+  }
 
+  function sliderMode(){
+    setPosition("player-float")
+  }
+  function inframeMode(){
+    setPosition("player-inframe")
+  }
 
+  useEffect(()=>{
+    if(position === "player-float"){
+      setPlayerSize({width:630, height:360})
+    }else{
+      setPlayerSize({width:700, height:400})
+    }
+  },[position])
 
   return (
-    <div
-      className="player"
-      onMouseEnter={hoverOnVideo}
-      onMouseLeave={hoverOutVideo}
-    >
-      <video
-        ref={vidRef}
-        onDoubleClick={backwardForwardHandler}
-        onClick={playPauseHandler}
-        width={700}
-        height={400}
+    <>
+      <div
+        className={position}
+        onMouseEnter={hoverOnVideo}
+        onMouseLeave={hoverOutVideo}
       >
-        <source src={video} type="video/mp4"></source>
-      </video>
-      <button id="muteBtn" onClick={muteControl}>
-        {muteStatus}
-      </button>
-      <div className={visibility}>
-        <div className="controls">
-          <div className="timer">
-            <p>{toHHMMSS(currTime)}/{toHHMMSS(duration)}</p>
+        <video
+          ref={vidRef}
+          onDoubleClick={backwardForwardHandler}
+          onClick={playPauseHandler}
+          width={playerSize.width}
+          height={playerSize.height}
+        >
+          <source src={video} type="video/mp4"></source>
+        </video>
+        <button id="muteBtn" onClick={muteControl}>
+          {muteStatus}
+        </button>
+        <div className={visibility}>
+          <div className="controls">
+            <div className="timer">
+              <p>
+                {toHHMMSS(currTime)}/{toHHMMSS(duration)}
+              </p>
+            </div>
+            <div className="center">
+              <button
+                className="forward-backward-btn"
+                onClick={() => backward(5)}
+              >
+                -5 sec
+              </button>
+              <button onClick={playPauseHandler} id="play-btn">
+                {playBtnIcon}
+              </button>
+              <button
+                className="forward-backward-btn"
+                onClick={() => forward(5)}
+              >
+                +5 sec
+              </button>
+            </div>
+            <div className="volume">
+              <input
+                onChange={volumeControl}
+                type="range"
+                min="1"
+                max="100"
+                class="slider"
+              ></input>
+            </div>
           </div>
-          <div className="center">
-            <button
-              className="forward-backward-btn"
-              onClick={() => backward(5)}
-            >
-              -5 sec
-            </button>
-            <button onClick={playPauseHandler} id="play-btn">
-              {playBtnIcon}
-            </button>
-            <button className="forward-backward-btn" onClick={() => forward(5)}>
-              +5 sec
-            </button>
+          <div onClick={seeking} className="progress-bar">
+            <progress id="file" value={currTime} max={duration}></progress>
           </div>
-          <div className="volume">
-            <input
-              onChange={volumeControl}
-              type="range"
-              min="1"
-              max="100"
-              class="slider"
-            ></input>
-          </div>
-        </div>
-        <div className="progress-bar">
-          <progress id="file" value={currTime} max={duration}></progress>
         </div>
       </div>
-    </div>
+
+      <div className="button-controls">
+        <button onClick={sliderMode}>Slider mode</button>
+        <button onClick={inframeMode}>Inframe Mode</button>
+      </div>
+    </>
   );
 }
 

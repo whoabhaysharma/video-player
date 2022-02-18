@@ -1,8 +1,20 @@
-.player{
+
+
+.player-inframe{
   position: relative;
   padding: 0px;
   width: 700px;
   height: 400px;
+  background-color: blue;
+}
+
+.player-float{
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  padding: 0px;
+  width: 630px;
+  height: 340px;
   background-color: blue;
 }
 
@@ -19,6 +31,10 @@
   align-items: center;
 }
 
+
+video{
+  position: absolute;
+}
 .controlsHide{
   display: none;
 
